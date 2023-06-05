@@ -22,50 +22,54 @@ inicio:
 
 loop:  
     lb $t4, 0($t0)      # Cargar el número actual del vector
-    addi $t0, $t0, 4    # Incrementar la dirección del vector en 4 bytes
-    addi $t1, $t1, 1    # Incrementar el índice del vector en 1
+    
+    li $t8, 4   	# Cargar el valor 4 en el registro $t8
+    add $t0, $t0,$t8    # Incrementar la dirección del vector en 4 bytes
+    
+    li $t8, 1   	# Cargar el valor 1 en el registro $t8
+    add $t1, $t1, $t8    # Incrementar el índice del vector en 1
 
-    andi $t5, $t1, 1    # Verificar si el índice es par o impar
-    beqz $t5, par       # Saltar a 'par' si el resultado es cero (índice par)
+    and $t5, $t1, 1    # Verificar si el índice es par o impar
+    li $t8, 0   	# Cargar el valor 0 en el registro $t8
+    beq $t5, $t8, par   # Saltar a 'par' si el resultado es cero (índice par)
 
     slt $t6, $t4, $s3   # Comprobar si el número actual es menor que el mínimo impar
-    bnez $t6, update_min_impar   # Saltar a 'update_min_impar' si el resultado no es cero
+    bne $t6, $t8, update_min_impar   # Saltar a 'update_min_impar' si el resultado no es cero
 
     slt $t7, $s4, $t4   # Comprobar si el número actual es mayor que el máximo impar
-    bnez $t7, update_max_impar   # Saltar a 'update_max_impar' si el resultado no es cero
+    bne $t7, $t8, update_max_impar   # Saltar a 'update_min_impar' si el resultado no es cero
 
     j next_iteration    # Saltar a 'next_iteration' para continuar con la siguiente iteración
 
 par:
     slt $t6, $t4, $t3   # Comprobar si el número actual es menor que el mínimo par
-    bnez $t6, update_min_par     # Saltar a 'update_min_par' si el resultado no es cero
+    bne $t6, $t8, update_min_par   # Saltar a 'update_min_impar' si el resultado no es cero
 
-    slt $t7, $t2, $t4   # Comprobar si el número actual es mayor que el máximo par
-    bnez $t7, update_max_par     # Saltar a 'update_max_par' si el resultado no es cero
+    slt $t7, $t2, $t4   # Comprobar si el número actual es mayor que el máximo par    
+    bne $t7, $t8, update_max_par  # Saltar a 'update_min_impar' si el resultado no es cero
 
 next_iteration:
     bne $t1, $s0, loop  # Saltar a 'loop' si el índice no alcanzó la cantidad de elementos
     jr $ra       # Saltar a 'end_program' para finalizar el programa
 
 update_min_par:
-    move $s1, $t4       # Actualizar el mínimo par
-    move $t3, $t4
+    add $s1, $zero, $t4  # Actualizar el mínimo par
+    add $t3, $zero, $t4  # Actualizar registro
     j next_iteration    # Saltar a 'next_iteration' para continuar con la siguiente iteración
 
 update_max_par:
-    move $s2, $t4       # Actualizar el máximo par
-    move $t2, $t4
-    j next_iteration    # Saltar a 'next_iteration' para continuar con la siguiente iteración
+    add $s2, $zero, $t4    	# Actualizar el máximo par
+    add $t2, $zero, $t4		# Actualizar registro
+    j next_iteration    	# Saltar a 'next_iteration' para continuar con la siguiente iteración
 
 update_min_impar:
-    move $s3, $t4       # Actualizar el mínimo impar
-    move $t3, $t4
-    j next_iteration    # Saltar a 'next_iteration' para continuar con la siguiente iteración
+    add $s3, $zero,$t4       	# Actualizar el mínimo impar
+    add $t3, $zero, $t4  	# Actualizar registro
+    j next_iteration     	# Saltar a 'next_iteration' para continuar con la siguiente iteración
 
 update_max_impar:
-    move $s4, $t4       # Actualizar el máximo impar
-    move $s4, $t4
-    j next_iteration    # Saltar a 'next_iteration' para continuar con la siguiente iteración
+    add $s4, $zero, $t4 	# Actualizar el máximo impar
+    j next_iteration    	# Saltar a 'next_iteration' para continuar con la siguiente iteración
 
 end_program:
     sw $s1, min_par     # Almacenar el mínimo par en memoria
