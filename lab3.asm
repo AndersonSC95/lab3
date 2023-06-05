@@ -20,8 +20,8 @@ inicio:
     li $s0, 25        	# Cargar el valor de 25 (cantidad de elementos en el vector)
     jr $ra
 
-loop:    
-    lw $t4, 0($t0)      # Cargar el número actual del vector
+loop:  
+    lb $t4, 0($t0)      # Cargar el número actual del vector
     addi $t0, $t0, 4    # Incrementar la dirección del vector en 4 bytes
     addi $t1, $t1, 1    # Incrementar el índice del vector en 1
 
