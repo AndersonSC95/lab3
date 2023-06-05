@@ -8,11 +8,17 @@ min_impar: .word 0
 .text
 .globl main
 main:
+	jal inicio
+	jal loop
+	j end_program
+	
+inicio:
     la $t0, vector    	# Cargar la dirección base del vector en $t0
     li $t1, 0          	# Inicializar el índice del vector a 0
     li $t2, -100      	# Inicializar el máximo con un valor pequeño
     li $t3, 100        	# Inicializar el mínimo con un valor grande
     li $s0, 25        	# Cargar el valor de 25 (cantidad de elementos en el vector)
+    jr $ra
 
 loop:    
     lw $t4, 0($t0)      # Cargar el número actual del vector
@@ -39,7 +45,7 @@ par:
 
 next_iteration:
     bne $t1, $s0, loop  # Saltar a 'loop' si el índice no alcanzó la cantidad de elementos
-    j end_program       # Saltar a 'end_program' para finalizar el programa
+    jr $ra       # Saltar a 'end_program' para finalizar el programa
 
 update_min_par:
     move $s1, $t4       # Actualizar el mínimo par
@@ -66,6 +72,3 @@ end_program:
     sw $s2, max_par     # Almacenar el máximo par en memoria
     sw $s3, min_impar  	# Almacenar el mínimo impar en memoria
     sw $s4, max_impar   # Almacenar el máximo impar en memoria
-
-    li $v0, 10          # Cargar el código de terminación del programa
-    syscall             # Finalizar el programa
